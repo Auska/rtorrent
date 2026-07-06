@@ -11,6 +11,7 @@
 #include <torrent/exceptions.h>
 #include <torrent/data/chunk_utils.h>
 #include <torrent/net/fd.h>
+#include <torrent/net/http_stack.h>
 #include <torrent/utils/chrono.h>
 #include <torrent/utils/log.h>
 
@@ -169,6 +170,10 @@ main(int argc, char** argv) {
     // Initialize option handlers after libtorrent to ensure
     // torrent::ConnectionManager* are valid etc.
     initialize_commands();
+
+    // Set default http user agent. May be overridden in .rtorrent.rc
+    // via network.http.user_agent.set.
+    torrent::net_thread::http_stack()->set_user_agent(USER_AGENT);
 
     if (OptionParser::has_flag('D', argc, argv)) {
       rpc::call_command_set_value("method.use_deprecated.set", true);

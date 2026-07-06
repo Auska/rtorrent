@@ -15,6 +15,8 @@
 #include <torrent/runtime/socket_manager.h>
 #include <torrent/utils/chrono.h>
 #include <torrent/utils/option_strings.h>
+#include <torrent/net/http_stack.h>
+#include <torrent/net/thread_net.h>
 
 #include "core/download.h"
 #include "core/download_list.h"
@@ -374,4 +376,19 @@ initialize_command_local() {
   rpc::rpc.mark_safe("pieces.preload.min_rate");
   rpc::rpc.mark_safe("pieces.memory.max");
   rpc::rpc.mark_safe("pieces.hash.on_completion");
+
+  //
+  // Customizable peer id and http user agent:
+  //
+
+  CMD_ANY         ("network.peer_id",             [](auto, auto)        { return torrent::peer_id_prefix(); });
+  CMD_ANY_STRING_V("network.peer_id.set",         [](auto, const std::string& str) { torrent::set_peer_id_prefix(str); });
+
+  CMD_ANY         ("network.http.user_agent",     [](auto, auto)        { return torrent::net_thread::http_stack()->user_agent(); });
+  CMD_ANY_STRING_V("network.http.user_agent.set", [](auto, const std::string& str) { torrent::net_thread::http_stack()->set_user_agent(str); });
+
+  rpc::rpc.mark_safe("network.peer_id");
+  rpc::rpc.mark_safe("network.peer_id.set");
+  rpc::rpc.mark_safe("network.http.user_agent");
+  rpc::rpc.mark_safe("network.http.user_agent.set");
 }
