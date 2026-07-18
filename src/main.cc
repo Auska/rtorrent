@@ -466,7 +466,7 @@ main(int argc, char** argv) {
     control->initialize();
     control->ui()->load_input_history();
 
-    torrent::net_thread::http_stack()->set_user_agent(USER_AGENT);
+    torrent::net_thread::http_stack()->set_user_agent("rtorrent/0.9.8/0.13.8");
     torrent::runtime::initialize_network();
 
     // Load session torrents and perform scheduled tasks to ensure session torrents are loaded
